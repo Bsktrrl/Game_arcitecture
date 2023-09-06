@@ -11,6 +11,8 @@ public class PerceptronManager : MonoBehaviour
     //[SerializeField] Point[] points = new Point[100];
 
     [Header("UI")]
+    [SerializeField] Button trainingButton;
+
     [SerializeField] Image displayImage;
     [SerializeField] GameObject perceptron;
     public List<GameObject> perceptronList = new List<GameObject>();
@@ -43,8 +45,6 @@ public class PerceptronManager : MonoBehaviour
         width = displayImage.GetComponent<RectTransform>().rect.width;
         height = displayImage.GetComponent<RectTransform>().rect.height;
 
-        p = new Perceptron();
-
         //Initialize Points
         for (int i = 0; i < perceptronAmount; i++)
         {
@@ -61,23 +61,60 @@ public class PerceptronManager : MonoBehaviour
             //Set Perceptron color
             if (perceptronList[perceptronList.Count - 1].GetComponent<Point>().GetDiff() > 0)
             {
-                perceptronList[perceptronList.Count - 1].GetComponent<Image>().color = Color.green;
+                perceptronList[perceptronList.Count - 1].GetComponent<Point>().SetOuterPoint(Color.black);
             }
             else
             {
-                perceptronList[perceptronList.Count - 1].GetComponent<Image>().color = Color.red;
+                perceptronList[perceptronList.Count - 1].GetComponent<Point>().SetOuterPoint(Color.white);
             }
         }
 
-        float[] inputs = { -1, 0.5f };
+        for (int i = 0; i < perceptronList.Count; i++)
+        {
+            Point point = perceptronList[i].GetComponent<Point>();
+            Perceptron perceptron = perceptronList[i].GetComponent<Perceptron>();
 
-        int guess = p.Guess(inputs);
+            float[] input = { point.GetPos_X(), point.GetPos_Y()};
+            int target = point.GetLabel();
 
-        print("Guess: " + guess);
+            int guess = perceptron.Guess(input);
+            if (guess == target)
+            {
+                point.SetInnerPoint(Color.green);
+            }
+            else
+            {
+                point.SetInnerPoint(Color.red);
+            }
+        }
     }
 
 
     //--------------------
 
 
+    public void TrainingButton()
+    {
+        for (int i = 0; i < perceptronList.Count; i++)
+        {
+            Point point = perceptronList[i].GetComponent<Point>();
+            Perceptron perceptron = perceptronList[i].GetComponent<Perceptron>();
+
+            float[] input = { point.GetPos_X(), point.GetPos_Y() };
+            int target = point.GetLabel();
+
+            //Training
+            perceptron.training(input, target);
+
+            int guess = perceptron.Guess(input);
+            if (guess == target)
+            {
+                point.SetInnerPoint(Color.green);
+            }
+            else
+            {
+                point.SetInnerPoint(Color.red);
+            }
+        }
+    }
 }

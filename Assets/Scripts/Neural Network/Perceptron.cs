@@ -1,13 +1,13 @@
-using System.Collections;
-using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
-public class Perceptron
+public class Perceptron : MonoBehaviour
 {
     float[] weights = new float[2];
+    float learningRate = 0.1f;
 
     //Constructor
-    public Perceptron()
+    void Start()
     {
         //initialize the weights randomly
         for (int i = 0; i < weights.Length; i++)
@@ -49,6 +49,18 @@ public class Perceptron
         else
         {
             return -1;
+        }
+    }
+
+    public void training(float[] inputs, int target)
+    {
+        int guess = Guess(inputs);
+        int error = target - guess;
+
+        //Tune all the weights
+        for (int i = 0; i < weights.Length; i++)
+        {
+            weights[i] += error * inputs[i] * learningRate;
         }
     }
 }

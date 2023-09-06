@@ -1,9 +1,13 @@
 using System;
 using UnityEngine;
+using UnityEngine.UI;
 
 [Serializable]
 public class Point : MonoBehaviour
 {
+    [SerializeField] Image outerPoint;
+    [SerializeField] Image innerPoint;
+
     [SerializeField] float x = 0;
     [SerializeField] float y = 0;
     [SerializeField] float diff = 0;
@@ -16,6 +20,19 @@ public class Point : MonoBehaviour
     public int GetLabel(Vector2 pos)
     {
         if (pos.x > pos.y)
+        {
+            label = 1;
+        }
+        else
+        {
+            label = -1;
+        }
+
+        return label;
+    }
+    public int GetLabel()
+    {
+        if (x > y)
         {
             label = 1;
         }
@@ -52,5 +69,14 @@ public class Point : MonoBehaviour
     public void SetPos_Y(float _y)
     {
         y = _y;
+    }
+
+    public void SetInnerPoint(Color color)
+    {
+        innerPoint.color = color;
+    }
+    public void SetOuterPoint(Color color)
+    {
+        outerPoint.color = color;
     }
 }
