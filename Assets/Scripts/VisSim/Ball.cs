@@ -38,7 +38,7 @@ public class Ball : MonoBehaviour
 
         var d = hit.position - transform.position;
 
-        print("isHit: " + hit.isHit + " | Position: " + hit.position + " | ValidY: " + d.magnitude);
+        //print("isHit: " + hit.isHit + " | Position: " + hit.position + " | ValidY: " + d.magnitude);
 
         if (hit.isHit && d.sqrMagnitude <= (r*r))
         {
