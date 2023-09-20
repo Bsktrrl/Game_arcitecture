@@ -48,8 +48,8 @@ public class TriangleSurface : MonoBehaviour
     void Start()
     {
         BuildMesh();
-        CalculateNormals();
 
+        CalculateNormals();
         var hit = GetCollision(new Vector2(15.19f, 15.19f));
 
         print($"Hit: {hit.isHit}");
@@ -59,13 +59,13 @@ public class TriangleSurface : MonoBehaviour
 
     void ReadVertexData()
     {
-        //Defines which characters to split file into lines on
+        //Where to split lines
         var fileDelimiters = new[] { "\r\n", "\r", "\n" };
 
-        //Defines which characters to split each line on
+        //What seperates the numbers on the line
         var lineDelimiters = new[] { '(', ')', ',' };
 
-        //Split file into array of non-empty lines
+        //Split the lines into a string-array
         var lines = vertexFile.text.Split(fileDelimiters, System.StringSplitOptions.RemoveEmptyEntries);
 
         if (lines.Length < 1)
@@ -74,6 +74,7 @@ public class TriangleSurface : MonoBehaviour
             return;
         }
 
+        //Get first line, to see how many lines there will be
         var numVertices = int.Parse(lines[0]);
 
         if (numVertices < 1)
@@ -82,6 +83,7 @@ public class TriangleSurface : MonoBehaviour
             return;
         }
 
+        //Split all lines based on the first line number
         for (int i = 1; i <= numVertices; i++)
         {
             var elements = lines[i].Split(lineDelimiters, System.StringSplitOptions.RemoveEmptyEntries);
@@ -102,18 +104,16 @@ public class TriangleSurface : MonoBehaviour
 
             vertices.Add(vertex);
         }
-
-        print("1. AddToVertices");
     }
     void ReadIndicesData()
     {
-        //Defines which characters to split file into lines on
+        //Where to split lines
         var fileDelimiters = new[] { "\r\n", "\r", "\n" };
 
-        //Defines which characters to split each line on
+        //What seperates the numbers on the line
         var lineDelimiters = new[] { ' ', ' ', ' ' };
 
-        //Split file into array of non-empty lines
+        //Split the lines into a string-array
         var lines = indicesFile.text.Split(fileDelimiters, System.StringSplitOptions.RemoveEmptyEntries);
 
         if (lines.Length < 1)
@@ -122,6 +122,7 @@ public class TriangleSurface : MonoBehaviour
             return;
         }
 
+        //Get first line, to see how many lines there will be
         var numVertices = int.Parse(lines[0]);
 
         if (numVertices < 1)
@@ -130,6 +131,7 @@ public class TriangleSurface : MonoBehaviour
             return;
         }
 
+        //Split all lines based on the first line number
         for (int i = 1; i <= numVertices; i++)
         {
             var elements = lines[i].Split(lineDelimiters, System.StringSplitOptions.RemoveEmptyEntries);
@@ -145,8 +147,6 @@ public class TriangleSurface : MonoBehaviour
             indices.Add(int.Parse(elements[1], CultureInfo.InvariantCulture));
             indices.Add(int.Parse(elements[2], CultureInfo.InvariantCulture));
         }
-
-        print("1. AddToVertices");
     }
     private void BuildMesh()
     {
@@ -206,21 +206,19 @@ public class TriangleSurface : MonoBehaviour
             if (temp.x is >= 0f and <= 1f && temp.y is >= 0f and <= 1f && temp.z is >= 0f and <= 1f)
             {
                 var y = vertices[i1].position.y * temp.x + vertices[i2].position.y * temp.y + vertices[i3].position.y * temp.z;
-                
-                //print($"{vertices[i1].y} * {u} + {vertices[i2].y} * {v} + {vertices[i3].y} * {w} = {y}");
+
                 hit.position.y = y;
 
-                //hit.Normal = v1.Normal;
                 hit.normal = Vector3.Cross(v2.position - v1.position, v3.position - v2.position).normalized;
                 hit.isHit = true;
 
                 //Corrigate y
-                Vector3 p = hit.position;
-                Vector3 c = position;
-                Vector3 d = p - c;
-                Vector3 n = hit.normal;
+                //Vector3 p = hit.position;
+                //Vector3 c = position;
+                //Vector3 d = p - c;
+                //Vector3 n = hit.normal;
 
-                var k = c + (Vector3.Dot(d, n) * n);
+                //var k = c + (Vector3.Dot(d, n) * n);
 
                 return hit;
             }
