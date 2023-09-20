@@ -13,11 +13,26 @@ public class Ball : MonoBehaviour
     [SerializeField][Range(0, 1)] float bounciness = 0;
 
     Vector3 lastPosition = Vector3.zero;
+    Vector3 startPosition;
 
 
     //--------------------
 
 
+    private void Start()
+    {
+        startPosition = transform.position;
+    }
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            transform.position = startPosition;
+            velocity = Vector3.zero;
+            oldNormal = Vector3.zero;
+            lastPosition = Vector3.zero;
+        }
+    }
     private void FixedUpdate()
     {
         Move();
@@ -66,6 +81,6 @@ public class Ball : MonoBehaviour
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.white;
-        Gizmos.DrawWireSphere(lastPosition, 4.5f);
+        Gizmos.DrawWireSphere(lastPosition, r * r);
     }
 }
