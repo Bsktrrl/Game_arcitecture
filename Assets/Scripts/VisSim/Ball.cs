@@ -7,7 +7,7 @@ public class Ball : MonoBehaviour
     [SerializeField] TriangleSurface triangleSurface;
     Vector3 g = Physics.gravity;
     float m = 1f;
-    float r = 2f;
+    float r = 0.02f;
     Vector3 velocity = Vector3.zero;
     Vector3 oldNormal = Vector3.zero;
     [SerializeField][Range(0, 1)] float bounciness = 0;
@@ -34,13 +34,9 @@ public class Ball : MonoBehaviour
         Vector3 G = m * g;
         Vector3 normalVelocity;
 
-        //bool validY = Mathf.Abs(hit.position.y - position.y) <= r;
-
         var d = hit.position - transform.position;
 
-        //print("isHit: " + hit.isHit + " | Position: " + hit.position + " | ValidY: " + d.magnitude);
-
-        if (hit.isHit && d.sqrMagnitude <= (r*r))
+        if (hit.isHit && d.sqrMagnitude <= (r * r))
         {
             normalVelocity = Vector3.Dot(velocity, hit.normal) * hit.normal;
 
@@ -51,9 +47,14 @@ public class Ball : MonoBehaviour
 
             N = -Vector3.Dot(hit.normal, G) * hit.normal;
 
+            transform.position = hit.position + (r * hit.normal);
+
             print("Hit");
         }
-        else lastPosition = Vector3.zero;
+        else
+        {
+            lastPosition = Vector3.zero;
+        }
 
         Vector3 acceleration = new Vector3();
         acceleration = (G + N) / m;

@@ -8,6 +8,7 @@ using UnityEngine.UIElements;
 using Unity.VisualScripting;
 using System.Linq;
 using System.Globalization;
+using System;
 
 public class TriangleSurface : MonoBehaviour
 {
@@ -18,6 +19,7 @@ public class TriangleSurface : MonoBehaviour
         public bool isHit;
     }
 
+    [Serializable]
     public class Vertex
     {
         public Vector3 position;
@@ -33,13 +35,14 @@ public class TriangleSurface : MonoBehaviour
     [SerializeField] TextAsset vertexFile;
     [SerializeField] TextAsset indicesFile;
 
-    private Mesh meshToSpawn;
-    List<Vertex> vertices = new();
-    List<int> indices = new();
+    Mesh meshToSpawn;
+    public List<Vertex> vertices = new();
+    public List<int> indices = new();
 
     private void Awake()
     {
         ReadVertexData();
+        ReadIndicesData();
     }
 
     void Start()
@@ -68,7 +71,6 @@ public class TriangleSurface : MonoBehaviour
         if (lines.Length < 1)
         {
             print(message:$"{vertexFile.name} was empty");
-
             return;
         }
 
@@ -77,11 +79,8 @@ public class TriangleSurface : MonoBehaviour
         if (numVertices < 1)
         {
             print(message:$"{vertexFile.name} contains no vertex data");
-
             return;
         }
-
-        //var newVertices = new Vector3[numVertices];
 
         for (int i = 1; i <= numVertices; i++)
         {
@@ -102,47 +101,55 @@ public class TriangleSurface : MonoBehaviour
                 );
 
             vertices.Add(vertex);
+        }
 
-            //newVertices[i - 1] = new Vector3
-            //(
-            //    float.Parse(elements[0], CultureInfo.InvariantCulture),
-            //    float.Parse(elements[1], CultureInfo.InvariantCulture),
-            //    float.Parse(elements[2], CultureInfo.InvariantCulture)
-            //);
+        print("1. AddToVertices");
+    }
+    void ReadIndicesData()
+    {
+        //Defines which characters to split file into lines on
+        var fileDelimiters = new[] { "\r\n", "\r", "\n" };
+
+        //Defines which characters to split each line on
+        var lineDelimiters = new[] { ' ', ' ', ' ' };
+
+        //Split file into array of non-empty lines
+        var lines = indicesFile.text.Split(fileDelimiters, System.StringSplitOptions.RemoveEmptyEntries);
+
+        if (lines.Length < 1)
+        {
+            print(message: $"{indicesFile.name} was empty");
+            return;
+        }
+
+        var numVertices = int.Parse(lines[0]);
+
+        if (numVertices < 1)
+        {
+            print(message: $"{indicesFile.name} contains no indices data");
+            return;
+        }
+
+        for (int i = 1; i <= numVertices; i++)
+        {
+            var elements = lines[i].Split(lineDelimiters, System.StringSplitOptions.RemoveEmptyEntries);
+
+            if (elements.Length < 3)
+            {
+                print(message: $"{indicesFile.name} is missing data on line {i}");
+
+                continue;
+            }
+
+            indices.Add(int.Parse(elements[0], CultureInfo.InvariantCulture));
+            indices.Add(int.Parse(elements[1], CultureInfo.InvariantCulture));
+            indices.Add(int.Parse(elements[2], CultureInfo.InvariantCulture));
         }
 
         print("1. AddToVertices");
     }
     private void BuildMesh()
     {
-        print("2. vertices.Count: " + vertices.Count);
-        //StreamReader og StreamWriter brukes for å lese og skrive til fil
-
-        //Add vertices
-        //vertices.Add(new Vertex(new Vector3(0, 0.208f, 0)));
-        //vertices.Add(new Vertex(new Vector3(0.56f, 0, 0)));
-        //vertices.Add(new Vertex(new Vector3(0, 0, 0.56f)));
-        //vertices.Add(new Vertex(new Vector3(0.56f, 0.11f, 0.56f)));
-        //vertices.Add(new Vertex(new Vector3(1.12f, 0, 0.56f)));
-        //vertices.Add(new Vertex(new Vector3(1.12f, 0.13f, 0)));
-
-        //Add indices
-        indices.Add(0);
-        indices.Add(2);
-        indices.Add(1);
-
-        indices.Add(1);
-        indices.Add(2);
-        indices.Add(3);
-
-        indices.Add(3);
-        indices.Add(4);
-        indices.Add(1);
-
-        indices.Add(4);
-        indices.Add(5);
-        indices.Add(1);
-
         //Spawn Mesh
         meshToSpawn = new Mesh
         {

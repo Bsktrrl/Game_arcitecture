@@ -485,7 +485,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   vertexFile: {fileID: 4900000, guid: fdeeef6a5b3207a48b212b743aaeb836, type: 3}
-  indicesFile: {fileID: 0}
+  indicesFile: {fileID: 4900000, guid: afa7fb8a39f4d9c48a1d826185c29a49, type: 3}
+  indices: 
 --- !u!1 &773944164
 GameObject:
   m_ObjectHideFlags: 0
